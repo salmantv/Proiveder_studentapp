@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:hiveproject/Model/data_models.dart';
 import 'package:hiveproject/Class/search.dart';
+import 'package:hiveproject/Provider/student_list.dart';
 import 'package:hiveproject/Screens/adding.dart';
 import 'package:hiveproject/Screens/details.dart';
+import 'package:provider/provider.dart';
 
 import '../Database/db_datas.dart';
 
@@ -15,45 +16,41 @@ class Home extends StatelessWidget {
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    getallDetails();
+    context.watch<Hiveservice>().getallDetails();
     return Scaffold(
-      body: ValueListenableBuilder(
-        valueListenable: StudentList,
-        builder: (BuildContext ctx, List<Model> studentList, Widget? child) {
-          return Scaffold(
-            //===================== App Bar ================//
-            appBar: AppBar(
-              toolbarHeight: 80,
-              title: const Text(
-                'Added Profiles',
-                style: TextStyle(
-                    fontSize: 25,
-                    fontFamily: "BebasNeue-Regular",
-                    color: Color.fromARGB(255, 27, 167, 97)),
-              ),
-              elevation: 0,
-              backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    showSearch(
-                        context: context, delegate: Searchdetal());
-                  },
-                  icon: const Icon(
-                    Icons.search,
-                    color: Color.fromARGB(255, 27, 167, 97),
-                    size: 35,
-                  ),
-                )
-              ],
+      //===================== App Bar ================//
+      appBar: AppBar(
+        toolbarHeight: 80,
+        title: const Text(
+          'Added Profiles',
+          style: TextStyle(
+              fontSize: 25,
+              fontFamily: "BebasNeue-Regular",
+              color: Color.fromARGB(255, 27, 167, 97)),
+        ),
+        elevation: 0,
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        actions: [
+          IconButton(
+            onPressed: () {
+              showSearch(context: context, delegate: Searchdetal());
+            },
+            icon: const Icon(
+              Icons.search,
+              color: Color.fromARGB(255, 27, 167, 97),
+              size: 35,
             ),
-            backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-            body: SafeArea(
-              child: ListView.separated(
+          )
+        ],
+      ),
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+      body: Consumer<Hiveservice>(
+        builder: (context, details, child) {
+          return SafeArea(
+            child: ListView.separated(
                 //====================== Cards ====================//
-
                 itemBuilder: (ctx, value) {
-                  final datas = studentList[value];
+                  final datas = details.StudentList[value];
                   return Padding(
                     padding: const EdgeInsets.all(25.0),
                     child: Card(
@@ -71,10 +68,11 @@ class Home extends StatelessWidget {
                             const AlertDialog(
                               title: Text(
                                 "Something Wrong",
-                                style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255)),
                               ),
                             );
-                            Deleting(value);
+                            Hiveservice().Deleting(value);
                           },
                           icon: const Icon(Icons.delete),
                         ),
@@ -105,9 +103,7 @@ class Home extends StatelessWidget {
                     width: 0,
                   );
                 },
-                itemCount: studentList.length,
-              ),
-            ),
+                itemCount: context.watch<Hiveservice>().StudentList.length),
           );
         },
       ),
@@ -117,7 +113,6 @@ class Home extends StatelessWidget {
           Icons.add,
         ),
         onPressed: () {
-          img = '';
           Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
             return FormHome();
           }));

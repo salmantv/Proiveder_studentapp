@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hiveproject/Database/db_datas.dart';
 import 'package:hiveproject/Model/data_models.dart';
+import 'package:hiveproject/Provider/student_list.dart';
+import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class FormHome extends StatelessWidget {
@@ -18,7 +20,6 @@ class FormHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Getimage _control = Get.put(Getimage());
-
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 229, 229, 229),
       body: SafeArea(
@@ -182,23 +183,20 @@ class FormHome extends StatelessWidget {
         img: imag,
         id: null);
 
+    if (imag.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          backgroundColor: Colors.red[300],
+          content: const Text("Please uplode Image")));
+    }
+
     if (_name.isEmpty ||
         _age.isEmpty ||
         _number.isEmpty ||
         _plce.isEmpty ||
         imag.isEmpty) {
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          backgroundColor: Colors.green[300],
-          content: const Text("successfulled")));
-      Addstudent(obj);
+      Hiveservice().addstudent(obj);
       valueschaking = true;
-
-      if (imag.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            backgroundColor: Colors.green[300],
-            content: const Text("successfulled")));
-      }
     }
   }
 }

@@ -2,7 +2,7 @@ import 'package:hive_flutter/adapters.dart';
 part 'data_models.g.dart';
 
 @HiveType(typeId: 1)
-class Model  {
+class Model {
   @HiveField(1)
   String name;
 

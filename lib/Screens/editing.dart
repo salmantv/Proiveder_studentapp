@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:hiveproject/Database/db_datas.dart';
 import 'package:hiveproject/Model/data_models.dart';
+import 'package:hiveproject/Provider/student_list.dart';
 import 'package:hiveproject/Screens/home.dart';
 
 // ignore: must_be_immutable
@@ -17,14 +17,11 @@ class Edit extends StatefulWidget {
 
 class _EditState extends State<Edit> {
   final _formkey = GlobalKey<FormState>();
-
   final name = TextEditingController();
-
   final age = TextEditingController();
-
   final phone = TextEditingController();
-
   final place = TextEditingController();
+  String imageedit = '';
 
   @override
   void initState() {
@@ -32,11 +29,11 @@ class _EditState extends State<Edit> {
     age.text = widget.datas.age;
     phone.text = widget.datas.phonenumber;
     place.text = widget.datas.place;
+    imageedit = widget.datas.img!;
   }
 
   @override
   Widget build(BuildContext context) {
-    final Getimage _control = Get.put(Getimage());
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
@@ -71,22 +68,21 @@ class _EditState extends State<Edit> {
                       children: [
                         GestureDetector(
                           onTap: () async {
-                            _control.addimage();
+                            Getimage().addimage();
                           },
-                          child: GetBuilder<Getimage>(builder: (ctxt) {
-                            return CircleAvatar(
-                              radius: 40,
-                              child: img.trim().isNotEmpty
-                                  ? CircleAvatar(
-                                      radius: 50,
-                                      backgroundImage: MemoryImage(
-                                          const Base64Decoder().convert(img)),
-                                    )
-                                  : Container(
-                                      color: Colors.white,
-                                    ),
-                            );
-                          }),
+                          child: CircleAvatar(
+                            radius: 40,
+                            child: img.trim().isNotEmpty
+                                ? CircleAvatar(
+                                    radius: 50,
+                                    backgroundImage: MemoryImage(
+                                        const Base64Decoder()
+                                            .convert(imageedit)),
+                                  )
+                                : Container(
+                                    color: Colors.white,
+                                  ),
+                          ),
                         ),
                         TextFormField(
                           controller: name,
@@ -188,6 +184,6 @@ class _EditState extends State<Edit> {
         place: _plce,
         id: null,
         img: _imaeg);
-    await updateItem(widget.index2, obj);
+    await Hiveservice().updateItem(widget.index2, obj);
   }
 }
