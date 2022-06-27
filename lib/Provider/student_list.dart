@@ -8,7 +8,6 @@ import '../Model/data_models.dart';
 class Hiveservice extends ChangeNotifier {
   // ignore: non_constant_identifier_names
   List<Model> StudentList = [];
-
   List get student => StudentList;
 
   Future<void> addstudent(Model value) async {
